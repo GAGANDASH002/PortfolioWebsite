@@ -70,12 +70,11 @@ function SkillCategory({ title, children }: { title: string; children: React.Rea
     </div>
   );
 }
-
 function Skill({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <div className="flex flex-col items-center bg-black/40 rounded-xl p-4 shadow hover:shadow-lg transition w-24">
-      <div className="text-3xl mb-2">{icon}</div>
-      <span className="text-gray-200 text-sm text-center">{label}</span>
+    <div className="flex flex-col items-center bg-black/40 rounded-xl p-3 shadow hover:shadow-lg transition w-20 sm:w-24">
+      <div className="text-2xl sm:text-3xl mb-1">{icon}</div>
+      <span className="text-gray-200 text-xs sm:text-sm text-center">{label}</span>
     </div>
   );
 }

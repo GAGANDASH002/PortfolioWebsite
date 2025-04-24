@@ -34,7 +34,9 @@ export const WavyBackground = ({
     x: number,
     ctx: any,
     canvas: any;
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
   const getSpeed = () => {
     switch (speed) {
       case "slow":
@@ -68,6 +70,7 @@ export const WavyBackground = ({
     "#e879f9",
     "#22d3ee",
   ];
+
   const drawWave = (n: number) => {
     nt += getSpeed();
     for (i = 0; i < n; i++) {
@@ -75,8 +78,8 @@ export const WavyBackground = ({
       ctx.lineWidth = waveWidth || 50;
       ctx.strokeStyle = waveColors[i % waveColors.length];
       for (x = 0; x < w; x += 5) {
-        var y = noise(x / 800, 0.3 * i, nt) * 100;
-        ctx.lineTo(x, y + h * 0.5); // adjust for height, currently at 50% of the container
+        const y = noise(x / 800, 0.3 * i, nt) * 100;
+        ctx.lineTo(x, y + h * 0.5);
       }
       ctx.stroke();
       ctx.closePath();
@@ -85,9 +88,13 @@ export const WavyBackground = ({
 
   let animationId: number;
   const render = () => {
-    ctx.fillStyle = backgroundFill || "black";
-    ctx.globalAlpha = waveOpacity || 0.5;
+    // FIX: Ensure full dark background every frame
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = backgroundFill || "#0b0b0b"; // Dark background
     ctx.fillRect(0, 0, w, h);
+
+    // Then draw waves
+    ctx.globalAlpha = waveOpacity || 0.5;
     drawWave(5);
     animationId = requestAnimationFrame(render);
   };
@@ -101,7 +108,6 @@ export const WavyBackground = ({
 
   const [isSafari, setIsSafari] = useState(false);
   useEffect(() => {
-    // I'm sorry but i have got to support it on safari.
     setIsSafari(
       typeof window !== "undefined" &&
         navigator.userAgent.includes("Safari") &&
@@ -110,8 +116,12 @@ export const WavyBackground = ({
   }, []);
 
   return (
-<div className={cn("min-h-full w-full relative", containerClassName)}>
-
+    <div
+      className={cn(
+        "min-h-screen w-full relative overflow-hidden bg-[#0b0b0b]", // 👈 ensure no white bg
+        containerClassName
+      )}
+    >
       <canvas
         className="absolute inset-0 z-0"
         ref={canvasRef}
@@ -119,7 +129,7 @@ export const WavyBackground = ({
         style={{
           ...(isSafari ? { filter: `blur(${blur}px)` } : {}),
         }}
-      ></canvas>
+      />
       <div className={cn("relative z-10", className)} {...props}>
         {children}
       </div>
